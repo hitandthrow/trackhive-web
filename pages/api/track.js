@@ -13,14 +13,16 @@ export default async function handler(req, res) {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0',
         'X-Requested-With': 'XMLHttpRequest',
         'Origin': 'https://old-xpressbees.xbees.in',
-        'Referer': 'https://old-xpressbees.xbees.in/track?isawb=Yes&trackid=' + awb,
+        'Referer': `https://old-xpressbees.xbees.in/track?isawb=Yes&trackid=${awb}`,
       },
       body,
     });
 
-    const data = await response.json();
+    const raw = await response.text(); // raw text first
+    const outer = JSON.parse(raw); // outer JSON
+    const final = JSON.parse(outer.result); // nested result
 
-    res.status(200).json(data);
+    res.status(200).json(final);
   } catch (error) {
     res.status(500).json({ error: 'Tracking failed', details: error.message });
   }
